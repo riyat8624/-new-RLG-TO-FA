@@ -982,6 +982,8 @@ body {
 .alert-text {
   font-family: var(--font-mono);
   font-size: 0.9rem;
+  white-space: pre-line;
+  line-height: 1.5;
 }
 
 /* --------------------------------------------------------------------------

@@ -74,7 +74,7 @@
         <div class="landing-kicker">RLG &rarr; NFA</div>
 
         <!-- Large Heading -->
-        <h1 class="landing-main-title">Right-Linear Grammar to Finite Automaton</h1>
+        <h1 class="landing-main-title">Right-Linear Grammar &rarr; NFA</h1>
 
         <!-- Subtitle -->
         <p class="landing-subtitle">An Interactive Theory of Computation Lab</p>
@@ -86,7 +86,7 @@
 
         <!-- Main Button -->
         <div class="landing-cta-wrap">
-          <button type="button" class="btn-enter-lab" id="enterLabButton">
+          <button type="button" class="btn-enter-lab" id="enterLabBtn">
             Enter the Automata Lab &rarr;
           </button>
         </div>
@@ -126,7 +126,7 @@
       <!-- Top Progress Indicator: 3-step Conversion Journey -->
       <nav class="top-nav" aria-label="Conversion Journey Progress">
         <div class="top-nav-inner">
-          <button type="button" class="btn-nav-intro" id="backToIntroButton" title="Return to Landing Page">
+          <button type="button" class="btn-nav-intro" id="backBtn" title="Return to Landing Page">
             &larr; Back to Intro
           </button>
           <div class="progress-journey-container">
@@ -226,9 +226,9 @@
           <div class="section-heading-group">
             <span class="section-step-tag">01</span>
             <div>
-              <h2 class="section-title">01. Write Your Grammar</h2>
+              <h2 class="section-title">01 — Grammar Input</h2>
               <p class="section-description">
-                Enter a Right-Linear Grammar and let the parser convert its productions into NFA transitions.
+                Enter Your Right-Linear Grammar
               </p>
             </div>
           </div>
@@ -277,7 +277,7 @@ A → aS | b</textarea>
               </svg>
               Clear
             </button>
-            <button type="button" class="btn btn-secondary" id="loadExampleBtn">
+            <button type="button" class="btn btn-secondary" id="exampleBtn">
               Load Example
             </button>
           </div>
@@ -306,7 +306,7 @@ A → aS | b</textarea>
           <div class="section-heading-group">
             <span class="section-step-tag step-tag-cyan">02</span>
             <div>
-              <h2 class="section-title">02. Parser in Action</h2>
+              <h2 class="section-title">02 — Parser in Action</h2>
               <p class="section-description">
                 Visualizing the step-by-step tokenization, variable mapping, and automaton synthesis.
               </p>
@@ -331,15 +331,15 @@ A → aS | b</textarea>
             </div>
             <div class="pipeline-step-item" id="stageStep2">
               <span class="step-check-icon">&cir;</span>
-              <span class="step-label">Identifying non-terminals</span>
+              <span class="step-label">Identifying states</span>
             </div>
             <div class="pipeline-step-item" id="stageStep3">
               <span class="step-check-icon">&cir;</span>
-              <span class="step-label">Identifying terminal symbols</span>
+              <span class="step-label">Identifying input symbols</span>
             </div>
             <div class="pipeline-step-item" id="stageStep4">
               <span class="step-check-icon">&cir;</span>
-              <span class="step-label">Creating NFA transitions</span>
+              <span class="step-label">Creating transitions</span>
             </div>
             <div class="pipeline-step-item" id="stageStep5">
               <span class="step-check-icon">&cir;</span>
@@ -353,7 +353,7 @@ A → aS | b</textarea>
 
           <div class="conversion-complete-banner" id="conversionCompleteBanner">
             <span class="complete-icon">&#10003;</span>
-            <span class="complete-text">Conversion Successful</span>
+            <span class="complete-text">Conversion Complete &#10003; &bull; Conversion Successful</span>
           </div>
         </div>
 
@@ -387,7 +387,7 @@ A → aS | b</textarea>
           <div class="section-heading-group">
             <span class="section-step-tag step-tag-green">03</span>
             <div>
-              <h2 class="section-title">03. Your NFA</h2>
+              <h2 class="section-title">03 — Your NFA</h2>
               <p class="section-description">
                 The synthesized Non-Deterministic Finite Automaton ready for execution and verification.
               </p>
@@ -415,13 +415,13 @@ A → aS | b</textarea>
             </div>
           </div>
           <div class="metric-card">
-            <span class="metric-label">All States (Q)</span>
+            <span class="metric-label">States</span>
             <div class="metric-val-wrap">
               <span class="metric-text" id="metricAllStates">S, A, F</span>
             </div>
           </div>
           <div class="metric-card">
-            <span class="metric-label">Input Symbols (&Sigma;)</span>
+            <span class="metric-label">Input Symbols</span>
             <div class="metric-val-wrap">
               <span class="metric-text font-mono" id="metricAllSymbols">a, b</span>
             </div>
@@ -454,7 +454,7 @@ A → aS | b</textarea>
         <div class="diagram-block-wrapper">
           <div class="diagram-block-header">
             <div class="diagram-title-group">
-              <h3 class="diagram-title">NFA State Transition Diagram</h3>
+              <h3 class="diagram-title">NFA Diagram</h3>
               <span class="diagram-subtitle">Interactive dynamic SVG representation</span>
             </div>
             <div class="diagram-legend-row">
@@ -472,7 +472,7 @@ A → aS | b</textarea>
         <!-- Grammar to Transition Trace -->
         <div class="trace-block-wrapper">
           <div class="trace-block-header">
-            <h3 class="trace-title">Grammar &rarr; Transition Trace</h3>
+            <h3 class="trace-title">How the Grammar Was Converted</h3>
             <span class="trace-subtitle">Step-by-step production decomposition</span>
           </div>
 

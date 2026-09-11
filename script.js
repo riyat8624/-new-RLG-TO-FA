@@ -25,6 +25,8 @@ const TEST_PRESETS = {
   test4: "S->aA|b\nA->aS|b"
 };
 
+const INVALID_PRODUCTION_ERROR = "Invalid production.\n\nExpected format:\nA → aB\nor\nA → a";
+
 /**
  * Parses and validates Right-Linear Grammar input.
  * Supports:
@@ -71,7 +73,7 @@ function parseGrammar(text) {
     if (!line.includes("->")) {
       return {
         success: false,
-        error: `Invalid production on line ${lineNum}: Missing '->'.\n\nExpected format:\nA -> aB\nor\nA -> a`
+        error: INVALID_PRODUCTION_ERROR
       };
     }
 
@@ -79,7 +81,7 @@ function parseGrammar(text) {
     if (sides.length !== 2) {
       return {
         success: false,
-        error: `Invalid production on line ${lineNum}: Multiple arrows found.\n\nExpected format:\nA -> aB\nor\nA -> a`
+        error: INVALID_PRODUCTION_ERROR
       };
     }
 
@@ -90,7 +92,7 @@ function parseGrammar(text) {
     if (!lhs || !/^[A-Z][0-9]?$/.test(lhs)) {
       return {
         success: false,
-        error: `Invalid production on line ${lineNum}: Invalid LHS variable '${lhs}'.\n\nExpected single uppercase non-terminal (e.g. S, A, B).`
+        error: INVALID_PRODUCTION_ERROR
       };
     }
 
@@ -105,7 +107,7 @@ function parseGrammar(text) {
     if (rawAlternatives.length === 0 || (rawAlternatives.length === 1 && !rawAlternatives[0].trim())) {
       return {
         success: false,
-        error: `Invalid production on line ${lineNum}: Missing right-hand side.\n\nExpected format:\nA -> aB\nor\nA -> a`
+        error: INVALID_PRODUCTION_ERROR
       };
     }
 
@@ -115,7 +117,7 @@ function parseGrammar(text) {
       if (!alt) {
         return {
           success: false,
-          error: `Invalid production on line ${lineNum}: Empty alternative after '|'.\n\nExpected format:\nA -> aB\nor\nA -> a`
+          error: INVALID_PRODUCTION_ERROR
         };
       }
 
@@ -128,7 +130,7 @@ function parseGrammar(text) {
         if (char >= "A" && char <= "Z") {
           return {
             success: false,
-            error: `Invalid production on line ${lineNum}: '${lhs} -> ${alt}'. Unit productions (A -> B) are not allowed in standard RLG.\n\nExpected format:\nA -> aB\nor\nA -> a`
+            error: INVALID_PRODUCTION_ERROR
           };
         }
 
@@ -179,16 +181,10 @@ function parseGrammar(text) {
           });
 
           validProductionsCount++;
-        } else if (isFirstNonTerminal && !isSecondNonTerminal) {
-          // Left-linear format A -> Ba
-          return {
-            success: false,
-            error: `Invalid production on line ${lineNum}: '${lhs} -> ${alt}'. This is Left-Linear (A -> Ba).\n\nExpected Right-Linear format:\nA -> aB\nor\nA -> a`
-          };
         } else {
           return {
             success: false,
-            error: `Invalid production on line ${lineNum}: '${lhs} -> ${alt}'.\n\nExpected format:\nA -> aB\nor\nA -> a`
+            error: INVALID_PRODUCTION_ERROR
           };
         }
       }
@@ -198,7 +194,7 @@ function parseGrammar(text) {
       else {
         return {
           success: false,
-          error: `Invalid production on line ${lineNum}: '${lhs} -> ${alt}'.\n\nExpected format:\nA -> aB\nor\nA -> a`
+          error: INVALID_PRODUCTION_ERROR
         };
       }
     }
@@ -685,7 +681,7 @@ function runParserPipelineAnimation(onComplete) {
       if (statusText) statusText.textContent = "All 6 stages verified ✓";
       if (onComplete) onComplete();
     }
-  }, 90);
+  }, 60);
 }
 
 /**
@@ -776,6 +772,15 @@ function clearAll() {
   if (svgContainer) svgContainer.innerHTML = "";
   if (traceContainer) traceContainer.innerHTML = "";
 
+  const metricStart = document.getElementById("metricStartState");
+  const metricFinal = document.getElementById("metricFinalState");
+  const metricStates = document.getElementById("metricAllStates");
+  const metricSymbols = document.getElementById("metricAllSymbols");
+  if (metricStart) metricStart.textContent = "-";
+  if (metricFinal) metricFinal.textContent = "-";
+  if (metricStates) metricStates.textContent = "-";
+  if (metricSymbols) metricSymbols.textContent = "-";
+
   updateJourneyIndicator(1);
 }
 
@@ -808,12 +813,12 @@ function loadExample(presetKey = "test1") {
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Entry Page Navigation (Enter the Automata Lab ->)
-  const enterLabButton = document.getElementById("enterLabButton") || document.getElementById("btnEnterLab");
+  const enterLabBtn = document.getElementById("enterLabBtn") || document.getElementById("enterLabButton") || document.getElementById("btnEnterLab");
   const landingPage = document.getElementById("landingPage") || document.getElementById("landingOverlay");
   const converterPage = document.getElementById("converterPage") || document.getElementById("appMainWrapper");
 
-  if (enterLabButton && landingPage && converterPage) {
-    enterLabButton.addEventListener("click", () => {
+  if (enterLabBtn && landingPage && converterPage) {
+    enterLabBtn.addEventListener("click", () => {
       landingPage.classList.add("hidden");
       converterPage.classList.remove("hidden");
       converterPage.scrollIntoView({ behavior: "smooth" });
@@ -821,9 +826,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 2. Back to Intro Navigation (<- Back to Intro)
-  const backToIntroButton = document.getElementById("backToIntroButton") || document.getElementById("btnReturnToIntro");
-  if (backToIntroButton && landingPage && converterPage) {
-    backToIntroButton.addEventListener("click", () => {
+  const backBtn = document.getElementById("backBtn") || document.getElementById("backToIntroButton") || document.getElementById("btnReturnToIntro");
+  if (backBtn && landingPage && converterPage) {
+    backBtn.addEventListener("click", () => {
       converterPage.classList.add("hidden");
       landingPage.classList.remove("hidden");
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -842,11 +847,21 @@ document.addEventListener("DOMContentLoaded", () => {
     clearBtn.addEventListener("click", clearAll);
   }
 
-  // 5. Load Example Button
-  const loadExampleBtn = document.getElementById("loadExampleBtn");
-  if (loadExampleBtn) {
-    loadExampleBtn.addEventListener("click", () => loadExample("test1"));
+  // 5. Example Button
+  const exampleBtn = document.getElementById("exampleBtn") || document.getElementById("loadExampleBtn");
+  if (exampleBtn) {
+    exampleBtn.addEventListener("click", () => loadExample("test1"));
   }
+
+  // Presets buttons if present
+  const p1 = document.getElementById("btnPreset1");
+  if (p1) p1.addEventListener("click", () => loadExample("test1"));
+  const p2 = document.getElementById("btnPreset2");
+  if (p2) p2.addEventListener("click", () => loadExample("test2"));
+  const p3 = document.getElementById("btnPreset3");
+  if (p3) p3.addEventListener("click", () => loadExample("test3"));
+  const p4 = document.getElementById("btnPreset4");
+  if (p4) p4.addEventListener("click", () => loadExample("test4"));
 
   // 6. Keyboard shortcut: Ctrl+Enter or Cmd+Enter to convert
   const grammarInput = document.getElementById("grammarInput");
@@ -863,8 +878,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // - Landing page is visible
   // - Converter page is hidden
   // - Parser and NFA results sections are hidden
-  // - Textarea has the default example pre-loaded
+  // - Textarea has default example pre-loaded
   if (grammarInput && !grammarInput.value.trim()) {
     grammarInput.value = TEST_PRESETS.test1;
   }
 });
+
+// Expose functions globally for robust event binding and test execution
+window.parseGrammar = parseGrammar;
+window.renderTransitionTable = renderTransitionTable;
+window.renderNFADiagram = renderNFADiagram;
+window.renderTrace = renderTrace;
+window.handleConvert = handleConvert;
+window.clearAll = clearAll;
+window.loadExample = loadExample;
+window.TEST_PRESETS = TEST_PRESETS;
