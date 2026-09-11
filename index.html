@@ -11,7 +11,7 @@
   </head>
   <body>
     <!-- FULL-SCREEN ENTRY / LANDING PAGE -->
-    <div class="landing-overlay" id="landingOverlay">
+    <div class="landing-page" id="landingPage">
       <!-- Animated Automata Background with Floating States and Grammar Tokens -->
       <div class="landing-bg-automata" aria-hidden="true">
         <svg class="landing-automata-svg" viewBox="0 0 1200 800" preserveAspectRatio="none">
@@ -86,7 +86,7 @@
 
         <!-- Main Button -->
         <div class="landing-cta-wrap">
-          <button type="button" class="btn-enter-lab" id="btnEnterLab">
+          <button type="button" class="btn-enter-lab" id="enterLabButton">
             Enter the Automata Lab &rarr;
           </button>
         </div>
@@ -121,13 +121,13 @@
       </footer>
     </div>
 
-    <!-- MAIN CONVERTER APPLICATION WRAPPER -->
-    <div class="app-main-wrapper" id="appMainWrapper">
+    <!-- MAIN CONVERTER APPLICATION PAGE -->
+    <div class="converter-page hidden" id="converterPage">
       <!-- Top Progress Indicator: 3-step Conversion Journey -->
       <nav class="top-nav" aria-label="Conversion Journey Progress">
         <div class="top-nav-inner">
-          <button type="button" class="btn-nav-intro" id="btnReturnToIntro" title="View Landing Overview">
-            &larr; Intro
+          <button type="button" class="btn-nav-intro" id="backToIntroButton" title="Return to Landing Page">
+            &larr; Back to Intro
           </button>
           <div class="progress-journey-container">
             <div class="step-badge-item active" id="stepIndicator1">
@@ -213,6 +213,9 @@
           </button>
           <button type="button" class="preset-chip" id="btnPreset3" onclick="loadExample('test3')">
             <strong>Test 3:</strong> S &rarr; aA | bB, A &rarr; a, B &rarr; b
+          </button>
+          <button type="button" class="preset-chip" id="btnPreset4" onclick="loadExample('test4')">
+            <strong>Test 4:</strong> S-&gt;aA|b, A-&gt;aS|b
           </button>
         </div>
       </section>
@@ -350,7 +353,7 @@ A → aS | b</textarea>
 
           <div class="conversion-complete-banner" id="conversionCompleteBanner">
             <span class="complete-icon">&#10003;</span>
-            <span class="complete-text">Conversion Complete &#10003;</span>
+            <span class="complete-text">Conversion Successful</span>
           </div>
         </div>
 

@@ -66,31 +66,25 @@ body {
   min-height: 100vh;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* ==========================================================================
    FULL-SCREEN LANDING PAGE / ENTRY OVERLAY
    ========================================================================== */
+.landing-page,
 .landing-overlay {
-  position: fixed;
-  inset: 0;
+  position: relative;
+  min-height: 100vh;
   width: 100%;
-  height: 100vh;
-  z-index: 1000;
   background-color: #f8fafc;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 36px 20px 24px;
-  overflow-y: auto;
-  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Exit transition state when entering the lab */
-.landing-overlay.landing-exit {
-  opacity: 0;
-  transform: translateY(-24px) scale(0.98);
-  pointer-events: none;
+  overflow-x: hidden;
 }
 
 /* Background Animated Automata Canvas & Floating Symbols */
@@ -388,9 +382,10 @@ body {
 /* ==========================================================================
    MAIN CONVERTER APPLICATION STYLING
    ========================================================================== */
+.converter-page,
 .app-main-wrapper {
   opacity: 1;
-  transition: opacity 0.4s ease;
+  width: 100%;
 }
 
 /* Top Progress Journey Navigation Bar */
