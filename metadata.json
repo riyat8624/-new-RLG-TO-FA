@@ -1,0 +1,6 @@
+{
+  "name": "Right-Linear Grammar → NFA Converter",
+  "description": "Theory of Computation educational web app to convert Right-Linear Grammars to NFA transition tables and diagrams.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

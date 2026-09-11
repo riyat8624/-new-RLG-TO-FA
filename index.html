@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Right-Linear Grammar → NFA Converter</title>
+    <meta name="description" content="Theory of Computation educational web app to convert Right-Linear Grammars to NFA transition tables and diagrams." />
+    <meta property="og:title" content="Right-Linear Grammar → NFA Converter" />
+    <meta property="og:description" content="Theory of Computation educational web app to convert Right-Linear Grammars to NFA transition tables and diagrams." />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- FULL-SCREEN ENTRY / LANDING PAGE -->
+    <div class="landing-overlay" id="landingOverlay">
+      <!-- Animated Automata Background with Floating States and Grammar Tokens -->
+      <div class="landing-bg-automata" aria-hidden="true">
+        <svg class="landing-automata-svg" viewBox="0 0 1200 800" preserveAspectRatio="none">
+          <defs>
+            <pattern id="landingGridDots" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1.2" fill="#cbd5e1" opacity="0.8" />
+            </pattern>
+            <marker id="landingArrowMarker" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94a3b8" />
+            </marker>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#landingGridDots)" />
+          
+          <!-- Background Floating Automata Node Clusters -->
+          <g class="floating-group group-1">
+            <line x1="140" y1="180" x2="300" y2="140" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#landingArrowMarker)" />
+            <text x="220" y="150" font-family="monospace" font-size="12" fill="#94a3b8" font-weight="bold">a</text>
+            <circle cx="140" cy="180" r="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+            <text x="140" y="185" font-family="monospace" font-size="14" fill="#64748b" text-anchor="middle" font-weight="bold">S</text>
+            <circle cx="300" cy="140" r="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+            <text x="300" y="145" font-family="monospace" font-size="14" fill="#64748b" text-anchor="middle" font-weight="bold">A</text>
+          </g>
+
+          <g class="floating-group group-2">
+            <path d="M 300 140 Q 420 220 520 180" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#landingArrowMarker)" />
+            <text x="410" y="210" font-family="monospace" font-size="12" fill="#94a3b8" font-weight="bold">b</text>
+            <circle cx="520" cy="180" r="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+            <circle cx="520" cy="180" r="19" fill="#none" stroke="#cbd5e1" stroke-width="1.5" />
+            <text x="520" y="186" font-family="monospace" font-size="14" fill="#64748b" text-anchor="middle" font-weight="bold">F</text>
+          </g>
+
+          <g class="floating-group group-3">
+            <line x1="880" y1="260" x2="1040" y2="320" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#landingArrowMarker)" />
+            <text x="960" y="280" font-family="monospace" font-size="12" fill="#94a3b8" font-weight="bold">0</text>
+            <circle cx="880" cy="260" r="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+            <text x="880" y="265" font-family="monospace" font-size="14" fill="#64748b" text-anchor="middle" font-weight="bold">q₀</text>
+            <circle cx="1040" cy="320" r="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+            <text x="1040" y="325" font-family="monospace" font-size="14" fill="#64748b" text-anchor="middle" font-weight="bold">q₁</text>
+          </g>
+
+          <!-- Floating Grammar Tokens -->
+          <text class="floating-symbol sym-1" x="180" y="340">S → aA | b</text>
+          <text class="floating-symbol sym-2" x="720" y="120">A → aS | b</text>
+          <text class="floating-symbol sym-3" x="840" y="520">δ(q, a)</text>
+          <text class="floating-symbol sym-4" x="220" y="600">A → a</text>
+          <text class="floating-symbol sym-5" x="60" y="460">Σ = {a, b}</text>
+          <text class="floating-symbol sym-6" x="980" y="640">q₀ &bull; F</text>
+        </svg>
+      </div>
+
+      <!-- Centered Landing Content -->
+      <main class="landing-content">
+        <!-- Small Badge -->
+        <div class="landing-badge">
+          <span class="landing-badge-dot"></span>
+          THEORY OF COMPUTATION &bull; AUTOMATA
+        </div>
+
+        <!-- Small Title / Label -->
+        <div class="landing-kicker">RLG &rarr; NFA</div>
+
+        <!-- Large Heading -->
+        <h1 class="landing-main-title">Right-Linear Grammar to Finite Automaton</h1>
+
+        <!-- Subtitle -->
+        <p class="landing-subtitle">An Interactive Theory of Computation Lab</p>
+
+        <!-- Short Description -->
+        <p class="landing-description">
+          Convert Right-Linear Grammar productions into an NFA step by step and understand how every grammar rule becomes a state transition.
+        </p>
+
+        <!-- Main Button -->
+        <div class="landing-cta-wrap">
+          <button type="button" class="btn-enter-lab" id="btnEnterLab">
+            Enter the Automata Lab &rarr;
+          </button>
+        </div>
+
+        <!-- Small Secondary Information: 4 Connected Nodes -->
+        <div class="landing-nodes-chain" aria-label="Grammar to Parsing to Transitions to NFA">
+          <div class="node-item">
+            <span class="node-circle node-grammar">G</span>
+            <span class="node-label">Grammar</span>
+          </div>
+          <span class="node-connector">&rarr;</span>
+          <div class="node-item">
+            <span class="node-circle node-parser">Parser</span>
+            <span class="node-label">Parsing</span>
+          </div>
+          <span class="node-connector">&rarr;</span>
+          <div class="node-item">
+            <span class="node-circle node-delta">&delta;</span>
+            <span class="node-label">Transitions</span>
+          </div>
+          <span class="node-connector">&rarr;</span>
+          <div class="node-item">
+            <span class="node-circle node-nfa">NFA</span>
+            <span class="node-label">NFA</span>
+          </div>
+        </div>
+      </main>
+
+      <!-- Optional Project Information Bottom Line -->
+      <footer class="landing-footer-note">
+        <span>A student project for Theory of Computation</span>
+      </footer>
+    </div>
+
+    <!-- MAIN CONVERTER APPLICATION WRAPPER -->
+    <div class="app-main-wrapper" id="appMainWrapper">
+      <!-- Top Progress Indicator: 3-step Conversion Journey -->
+      <nav class="top-nav" aria-label="Conversion Journey Progress">
+        <div class="top-nav-inner">
+          <button type="button" class="btn-nav-intro" id="btnReturnToIntro" title="View Landing Overview">
+            &larr; Intro
+          </button>
+          <div class="progress-journey-container">
+            <div class="step-badge-item active" id="stepIndicator1">
+              <span class="step-num">01</span>
+              <span class="step-name">GRAMMAR</span>
+            </div>
+            <div class="step-journey-arrow" id="arrowJourney1">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+            <div class="step-badge-item" id="stepIndicator2">
+              <span class="step-num">02</span>
+              <span class="step-name">PARSER</span>
+            </div>
+            <div class="step-journey-arrow" id="arrowJourney2">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+            <div class="step-badge-item" id="stepIndicator3">
+              <span class="step-num">03</span>
+              <span class="step-name">NFA</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <div class="container">
+      <!-- HERO SECTION -->
+      <header class="hero-section">
+        <div class="lab-pill-badge">
+          <span class="lab-pulse-dot"></span>
+          THEORY OF COMPUTATION &bull; AUTOMATA LAB
+        </div>
+        <h1 class="hero-title">Right-Linear Grammar &rarr; NFA</h1>
+        <p class="hero-subtitle">
+          Turn Grammar Rules into a Finite Automaton. A simple interactive tool for converting Right-Linear Grammar into a Non-Deterministic Finite Automaton.
+        </p>
+
+        <!-- Mini Visual Flow Graphic -->
+        <div class="hero-visual-flow">
+          <div class="flow-pill flow-grammar">
+            <span class="flow-icon">&Sigma;</span> Grammar
+          </div>
+          <div class="flow-arrow-animated">
+            <span class="flow-dot"></span>
+            <span class="flow-dot"></span>
+            <span class="flow-dot"></span>
+            &rarr;
+          </div>
+          <div class="flow-pill flow-parser">
+            <span class="flow-icon">&part;</span> Parser
+          </div>
+          <div class="flow-arrow-animated">
+            <span class="flow-dot"></span>
+            <span class="flow-dot"></span>
+            <span class="flow-dot"></span>
+            &rarr;
+          </div>
+          <div class="flow-pill flow-nfa">
+            <span class="flow-icon">&#9678;</span> NFA
+          </div>
+        </div>
+      </header>
+
+      <!-- QUICK TEST PRESETS -->
+      <section class="preset-examples-section" aria-label="Try Example Grammars">
+        <div class="preset-label">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          Try an Example:
+        </div>
+        <div class="preset-chips-list">
+          <button type="button" class="preset-chip" id="btnPreset1" onclick="loadExample('test1')">
+            <strong>Test 1:</strong> S &rarr; aA | b, A &rarr; aS | b
+          </button>
+          <button type="button" class="preset-chip" id="btnPreset2" onclick="loadExample('test2')">
+            <strong>Test 2:</strong> S &rarr; 0A | 1, A &rarr; 0S | 1
+          </button>
+          <button type="button" class="preset-chip" id="btnPreset3" onclick="loadExample('test3')">
+            <strong>Test 3:</strong> S &rarr; aA | bB, A &rarr; a, B &rarr; b
+          </button>
+        </div>
+      </section>
+
+      <!-- SECTION 01 — GRAMMAR INPUT -->
+      <section class="lab-card section-card" id="grammarInputSection">
+        <div class="section-card-header">
+          <div class="section-heading-group">
+            <span class="section-step-tag">01</span>
+            <div>
+              <h2 class="section-title">01. Write Your Grammar</h2>
+              <p class="section-description">
+                Enter a Right-Linear Grammar and let the parser convert its productions into NFA transitions.
+              </p>
+            </div>
+          </div>
+          <div class="format-tag">
+            Supported: <code>A &rarr; aB | a</code>
+          </div>
+        </div>
+
+        <!-- Code Editor Box -->
+        <div class="editor-window">
+          <div class="editor-titlebar">
+            <div class="editor-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <span class="editor-filename">grammar.rlg</span>
+            <span class="editor-hint">Supports <code>-&gt;</code> and <code>&rarr;</code></span>
+          </div>
+          <div class="editor-body">
+            <div class="line-numbers" aria-hidden="true">
+              <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+            </div>
+            <textarea
+              id="grammarInput"
+              class="grammar-code-area"
+              rows="5"
+              placeholder="S → aA | b&#10;A → aS | b"
+              spellcheck="false"
+              aria-label="Grammar productions code input"
+            >S → aA | b
+A → aS | b</textarea>
+          </div>
+        </div>
+
+        <!-- Control Actions Row -->
+        <div class="editor-controls-row">
+          <div class="helper-note">
+            Each uppercase letter is a non-terminal state. Terminals are lowercase or digits.
+          </div>
+          <div class="editor-btn-group">
+            <button type="button" class="btn btn-ghost" id="clearBtn">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              Clear
+            </button>
+            <button type="button" class="btn btn-secondary" id="loadExampleBtn">
+              Load Example
+            </button>
+          </div>
+        </div>
+
+        <!-- Large Convert Button -->
+        <div class="convert-action-center">
+          <button type="button" class="btn-convert-primary" id="convertBtn">
+            <span class="convert-bolt">&#9889;</span> Convert to NFA
+          </button>
+        </div>
+
+        <!-- Validation Error Message -->
+        <div class="lab-alert alert-error" id="errorAlert" role="alert" style="display: none;">
+          <div class="alert-icon-wrap">&#10006;</div>
+          <div class="alert-content">
+            <div class="alert-heading">Grammar Validation Notice</div>
+            <div class="alert-text" id="errorMessage">Invalid production format.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 02 — PARSER IN ACTION -->
+      <section class="lab-card section-card section-parser" id="parserSection" style="display: none;">
+        <div class="section-card-header">
+          <div class="section-heading-group">
+            <span class="section-step-tag step-tag-cyan">02</span>
+            <div>
+              <h2 class="section-title">02. Parser in Action</h2>
+              <p class="section-description">
+                Visualizing the step-by-step tokenization, variable mapping, and automaton synthesis.
+              </p>
+            </div>
+          </div>
+          <div class="live-indicator" id="liveParsingBadge">
+            <span class="live-dot"></span> Processing
+          </div>
+        </div>
+
+        <!-- Animated Processing Card -->
+        <div class="parser-stages-card">
+          <div class="stages-header">
+            <span class="stages-title">Automata Synthesizer Pipeline</span>
+            <span class="stages-status" id="pipelineStatusText">Executing analysis...</span>
+          </div>
+
+          <div class="pipeline-steps-grid" id="pipelineStepsList">
+            <div class="pipeline-step-item" id="stageStep1">
+              <span class="step-check-icon">&cir;</span>
+              <span class="step-label">Reading productions</span>
+            </div>
+            <div class="pipeline-step-item" id="stageStep2">
+              <span class="step-check-icon">&cir;</span>
+              <span class="step-label">Identifying non-terminals</span>
+            </div>
+            <div class="pipeline-step-item" id="stageStep3">
+              <span class="step-check-icon">&cir;</span>
+              <span class="step-label">Identifying terminal symbols</span>
+            </div>
+            <div class="pipeline-step-item" id="stageStep4">
+              <span class="step-check-icon">&cir;</span>
+              <span class="step-label">Creating NFA transitions</span>
+            </div>
+            <div class="pipeline-step-item" id="stageStep5">
+              <span class="step-check-icon">&cir;</span>
+              <span class="step-label">Finding start state</span>
+            </div>
+            <div class="pipeline-step-item" id="stageStep6">
+              <span class="step-check-icon">&cir;</span>
+              <span class="step-label">Creating final state</span>
+            </div>
+          </div>
+
+          <div class="conversion-complete-banner" id="conversionCompleteBanner">
+            <span class="complete-icon">&#10003;</span>
+            <span class="complete-text">Conversion Complete &#10003;</span>
+          </div>
+        </div>
+
+        <!-- How the Parser Works - Academic Explanation Card -->
+        <div class="parser-rules-breakdown">
+          <h3 class="rules-heading">How the Parser Works (Production &rarr; Automaton Transition)</h3>
+          <div class="rules-dual-grid">
+            <div class="rule-box rule-box-1">
+              <div class="rule-tag">Rule 1 &bull; Transition to Variable</div>
+              <div class="rule-formula"><code>A &rarr; aB</code> &nbsp;&rArr;&nbsp; <code>A --a--&gt; B</code></div>
+              <p class="rule-explain">
+                <strong>Non-terminal &rarr; Input symbol &rarr; Next state</strong>.<br />
+                When a production pairs an input symbol with a non-terminal variable, it transitions directly to that variable's state.
+              </p>
+            </div>
+            <div class="rule-box rule-box-2">
+              <div class="rule-tag">Rule 2 &bull; Terminal-Only Acceptance</div>
+              <div class="rule-formula"><code>A &rarr; a</code> &nbsp;&rArr;&nbsp; <code>A --a--&gt; F</code></div>
+              <p class="rule-explain">
+                <strong>When a production ends with a terminal, connect it to the final state F</strong>.<br />
+                Because no further variable remains to be expanded, the automaton terminates and reaches acceptance.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 03 — NFA RESULT -->
+      <section class="lab-card section-card section-results" id="nfaSection" style="display: none;">
+        <div class="section-card-header">
+          <div class="section-heading-group">
+            <span class="section-step-tag step-tag-green">03</span>
+            <div>
+              <h2 class="section-title">03. Your NFA</h2>
+              <p class="section-description">
+                The synthesized Non-Deterministic Finite Automaton ready for execution and verification.
+              </p>
+            </div>
+          </div>
+          <div class="formal-tuple-pill">
+            M = (Q, &Sigma;, &delta;, q<sub>0</sub>, F)
+          </div>
+        </div>
+
+        <!-- Result Summary Metrics Grid -->
+        <div class="nfa-metrics-grid">
+          <div class="metric-card">
+            <span class="metric-label">Start State</span>
+            <div class="metric-val-wrap">
+              <span class="state-circle-badge start-badge" id="metricStartState">S</span>
+              <span class="metric-sub">(First LHS symbol)</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Final State</span>
+            <div class="metric-val-wrap">
+              <span class="state-circle-badge final-badge" id="metricFinalState">F</span>
+              <span class="metric-sub">(Accepting ring)</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">All States (Q)</span>
+            <div class="metric-val-wrap">
+              <span class="metric-text" id="metricAllStates">S, A, F</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Input Symbols (&Sigma;)</span>
+            <div class="metric-val-wrap">
+              <span class="metric-text font-mono" id="metricAllSymbols">a, b</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transition Table -->
+        <div class="table-block-wrapper">
+          <div class="table-block-header">
+            <h3 class="table-title">NFA Transition Table</h3>
+            <span class="table-subtitle">State transition mapping &delta;(q, a)</span>
+          </div>
+          <div class="table-responsive-box">
+            <table class="nfa-table" id="nfaTransitionTable">
+              <thead>
+                <tr>
+                  <th scope="col">From State</th>
+                  <th scope="col">Input Symbol</th>
+                  <th scope="col">To State</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Visual NFA Diagram -->
+        <div class="diagram-block-wrapper">
+          <div class="diagram-block-header">
+            <div class="diagram-title-group">
+              <h3 class="diagram-title">NFA State Transition Diagram</h3>
+              <span class="diagram-subtitle">Interactive dynamic SVG representation</span>
+            </div>
+            <div class="diagram-legend-row">
+              <span class="legend-item"><span class="legend-dot dot-start"></span> Start State (&rarr; incoming)</span>
+              <span class="legend-item"><span class="legend-dot dot-norm"></span> Intermediate</span>
+              <span class="legend-item"><span class="legend-dot dot-final"></span> Final State (double circle)</span>
+            </div>
+          </div>
+
+          <div class="svg-stage-container" id="svgContainer">
+            <!-- Dynamically generated SVG graph -->
+          </div>
+        </div>
+
+        <!-- Grammar to Transition Trace -->
+        <div class="trace-block-wrapper">
+          <div class="trace-block-header">
+            <h3 class="trace-title">Grammar &rarr; Transition Trace</h3>
+            <span class="trace-subtitle">Step-by-step production decomposition</span>
+          </div>
+
+          <div class="trace-grid" id="traceContainer">
+            <!-- Dynamically populated trace cards -->
+          </div>
+        </div>
+      </section>
+
+      <!-- THEORY SECTION -->
+      <footer class="lab-card theory-card" id="theorySection">
+        <div class="theory-header">
+          <h2 class="theory-main-title">Theory of Computation Reference</h2>
+          <span class="theory-badge">TOC Notes</span>
+        </div>
+
+        <div class="theory-content-grid">
+          <div class="theory-col">
+            <h3 class="theory-h3">What is Right-Linear Grammar?</h3>
+            <p class="theory-p">
+              A <strong>Right-Linear Grammar (RLG)</strong> is a formal grammar in which every production rule has the non-terminal variable appearing strictly at the rightmost end of the right-hand side.
+            </p>
+            <div class="theory-code-box">
+              <code>A &rarr; aB</code> &nbsp;or&nbsp; <code>A &rarr; a</code>
+            </div>
+            <p class="theory-p">
+              where <strong>A</strong> and <strong>B</strong> are non-terminals (variables) and <strong>a</strong> is a terminal symbol. Right-linear grammars generate the exact class of <strong>Regular Languages</strong>.
+            </p>
+          </div>
+
+          <div class="theory-col">
+            <h3 class="theory-h3">Conversion Rule to Finite Automaton</h3>
+            <p class="theory-p">
+              Every production decomposes directly into an automaton state transition:
+            </p>
+            <div class="theory-code-box">
+              <code>A &rarr; aB</code> &nbsp;becomes&nbsp; <code>A --a--&gt; B</code><br />
+              <code>A &rarr; a</code> &nbsp;&nbsp;becomes&nbsp; <code>A --a--&gt; F</code>
+            </div>
+            <p class="theory-p">
+              The first non-terminal on the LHS is marked as the initial start state, and <strong>F</strong> serves as the common accepting final state.
+            </p>
+          </div>
+        </div>
+
+        <div class="lab-footer-bar">
+          <span>RLG &rarr; NFA Converter &bull; TOC Digital Lab</span>
+          <span>Vanilla JavaScript &bull; Clean SVG Automaton</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+    <!-- Application Script -->
+    <script src="./script.js"></script>
+  </body>
+</html>
